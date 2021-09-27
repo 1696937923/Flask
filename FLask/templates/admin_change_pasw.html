@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/static/css/admin_change_pasw.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <title>修改密码</title>
+</head>
+
+<body>
+    <div id="main">
+        <div id="success-tips" style="visibility: hidden;">
+            <span id="success-tip">this is a tip</span>
+        </div>
+        <div id="head">
+            <h1 id="img"><img src="/static/login.png" width="50" height="50">修改密码</h1>
+        </div>
+        <form>
+            <p class="p">旧密码:<input class="text_area" type="text" name="num" id="old_pasw" autocomplete="off"></p>
+            <p class="p">新密码:<input class="text_area" type="password" name="password" id="new_pasw"></p>
+            <p class="p" id="re">确认新密码:<input class="text_area" type="password" name="password" id="re_pasw"></p>
+            <div id="err-tips" style="visibility: hidden;">
+                <span id="tip"></span>
+            </div>
+            <input type="button" class="btn" id="change" value="确认修改">
+            <input type="button" class="btn" id="back" value="返回">
+        </form>
+    </div>
+
+    <script>
+        //显示错误提示
+        function show_errtips(msg) {
+            document.getElementById('err-tips').style.visibility = "visible"
+            document.getElementById('tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('err-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+        //显示正确提示
+        function show_suctips(msg) {
+            document.getElementById('success-tips').style.visibility = "visible"
+            document.getElementById('success-tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('success-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+
+        $("#change").click(function() {
+            var old_pasw = $("#old_pasw").val();
+            var new_pasw = $("#new_pasw").val();
+            var re_pasw = $("#re_pasw").val();
+
+            if (old_pasw == '' || new_pasw == "" || re_pasw == '') {
+                show_errtips("请输入完整信息!");
+            } else if (new_pasw.length < 6) {
+                show_errtips("密码长度太短!")
+            } else if (new_pasw != re_pasw) {
+                show_errtips("两次密码不一致!");
+            } else {
+                var gnl = confirm("确定要修改密码?");
+                if (gnl == true) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: "/admin/change/pasw",
+                        data: {
+                            "old_pasw": old_pasw,
+                            "new_pasw": new_pasw,
+                        },
+                        success: function(data) {
+                            if (data.status == "0") {
+                                show_errtips(data.msg);
+                                document.getElementById("old_pasw").value = '';
+                            } else {
+                                show_suctips(data.msg);
+                                document.getElementById("old_pasw").value = '';
+                                document.getElementById("new_pasw").value = '';
+                                document.getElementById("re_pasw").value = '';
+                            }
+                        },
+                        error: function(data) {
+                            alert("出错啦!");
+                        },
+                    });
+                }
+            }
+        });
+
+        $('#back').click(function() {
+            window.location.href = "/admin_index";
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+ body {
+        background: #D3E7E9;
+    }
+    
+    nav {
+        display: inline-block;
+        background-color: #5597b4;
+        box-shadow: 0 1px 1px #ccc;
+        border-radius: 2px;
+        left: 2px;
+        position: relative;
+    }
+    
+    nav a {
+        position: relative;
+        display: inline-block;
+        padding: 10px 50px;
+        margin-left: 2px;
+        color: #fff !important;
+        font-weight: bold;
+        font-size: 16px;
+        text-decoration: none !important;
+        line-height: 1;
+    }
+    
+    .my_msg {
+        width: 200px;
+        position: relative;
+        float: left;
+    }
+    
+    #new_msg_num {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        font-size: 7px;
+        color: #fff;
+        text-align: center;
+        background-color: #f00;
+        border-radius: 50%;
+        position: absolute;
+        right: 60px;
+        top: 2px;
+    }
+    
+    #no_msg {
+        position: absolute;
+        font-weight: bold;
+        font-size: 16px;
+        color: green;
+        top: 250px;
+        left: 30%;
+        z-index: 1;
+    }
+    
+    #err_tip {
+        position: absolute;
+        font-weight: bold;
+        font-size: 17px;
+        color: red;
+        top: 250px;
+        left: 20%;
+        z-index: 1;
+    }
+    
+    .msg-list {
+        position: relative;
+        top: 20px;
+    }
+    
+    .msg-title {
+        width: 250px;
+        position: relative;
+        top: -9px;
+        left: -6px;
+        word-wrap: break-word;
+        word-break: break-all;
+    }
+    
+    .msg-read {
+        background-color: white;
+        border: 1px solid lightgrey;
+        margin-bottom: 15px;
+        position: relative;
+        list-style-type: none;
+        padding: 17px;
+        overflow-y: auto;
+    }
+    
+    .commenter {
+        color: blue;
+        position: relative;
+    }
+    
+    .contain {
+        position: relative;
+        font-size: 14px;
+        top: 4px;
+        font-weight: bold;
+    }
+    
+    .look_com {
+        position: absolute;
+        color: #00BFFF;
+        right: 90px;
+        font-size: 13px;
+        text-decoration: none;
+        bottom: 2px;
+    }
+    
+    .reply_com {
+        position: absolute;
+        color: #00BFFF;
+        right: 50px;
+        font-size: 13px;
+        text-decoration: none;
+        bottom: 2px;
+    }
+    
+    .del_com {
+        position: absolute;
+        color: #00BFFF;
+        right: 10px;
+        font-size: 13px;
+        text-decoration: none;
+        bottom: 2px;
+    }
+    
+    .com_create_time {
+        position: absolute;
+        font-size: 10px;
+        color: #808080;
+        top: 2px;
+        right: 10px;
+    }
+    
+    .text_com {
+        width: 80%;
+        height: 50px;
+        position: relative;
+        margin-top: -5px;
+        margin-left: 2px;
+    }
+    
+    .sub_com {
+        font-size: 13px;
+        bottom: 9px;
+        height: 30px;
+        color: white;
+        background-color: skyblue;
+        border-radius: 2px;
+        border-width: 0;
+        position: relative;
+    }
+    
+    .err-tips {
+        height: 10px;
+        position: relative;
+    }
+    
+    .tip {
+        position: relative;
+        font-size: 10px;
+        font-weight: bold;
+        bottom: 13px;
+        left: -8px;
+        margin-left: 10px;
+        color: red;
+    }
+    
+    .msg_tip {
+        width: 8px;
+        height: 8px;
+        color: #fff;
+        background-color: #f00;
+        border-radius: 50%;
+        position: absolute;
+        left: 2px;
+        top: 2px;
+    }
+    
+    [v-cloak] {
+        display: none;
+    }

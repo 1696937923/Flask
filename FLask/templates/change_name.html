@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/static/css/change_name.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <title>修改昵称</title>
+</head>
+
+<body>
+    <div id="main">
+        <div id="success-tips" style="visibility: hidden;">
+            <span id="success-tip">this is a tip</span>
+        </div>
+        <div id="head">
+            <h1 id="img"><img src="/static/login.png" width="50" height="50">修改昵称</h1>
+        </div>
+        <form id='contain_form'>
+            <span>新昵称:</span>
+            <input class="text_area" type="text" id="new_name" autocomplete="off">
+            <div id="err-tips" style="visibility: hidden;">
+                <span id="tip"></span>
+            </div>
+            <input type="button" class="btn" id="change" value="确认修改">
+            <input type="button" class="btn" id="back" value="返回">
+        </form>
+    </div>
+
+    <script>
+        //显示错误提示
+        function show_errtips(msg) {
+            document.getElementById('err-tips').style.visibility = "visible"
+            document.getElementById('tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('err-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+        //显示正确提示
+        function show_suctips(msg) {
+            document.getElementById('success-tips').style.visibility = "visible"
+            document.getElementById('success-tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('success-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+
+        $("#change").click(function() {
+            var new_name = $("#new_name").val();
+            if (new_name == '') {
+                show_errtips("昵称不能为空!");
+            } else if (new_name.length > 8) {
+                show_errtips("用户名过长!");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "/change/name",
+                    data: {
+                        "new_name": new_name,
+                    },
+                    success: function(data) {
+                        if (data.status == "0") {
+                            show_errtips(data.msg);
+                        } else {
+                            document.getElementById("new_name").value = ''
+                            show_suctips(data.msg);
+                        }
+                    },
+                    error: function(e) {
+                        alert("出错啦!");
+                    },
+                });
+            }
+        });
+
+        $('#back').click(function() {
+            window.location.href = "/user_center";
+        });
+    </script>
+</body>
+
+</html>

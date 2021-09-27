@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/static/css/register.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <title>哈尔滨工业大学(威海)</title>
+</head>
+
+<body>
+    <div id="main">
+        <div id="success-tips" style="visibility: hidden;">
+            <span id="success-tip">this is a tip</span>
+        </div>
+        <h1><img src="/static/login.png" width="50" height="50" />注册</h1>
+        <div>
+            <form class="regi">
+                <input class="text_area" type="text" name="num" id="num" autocomplete="off" placeholder="学号"><br/>
+                <input class="text_area" type="text" name="username" id="username" autocomplete="off" placeholder="昵称(至多为8位)"><br/>
+                <input class="text_area" type="password" name="password" id="password" placeholder="密码(至少为6位)" autocomplete="off"><br/>
+                <input class="text_area" type="password" name="repassword" id="repassword" placeholder="确认密码" autocomplete="off"><br/>
+                <input class="text_area" type="text" name="reg_code" id="reg_code" autocomplete="off" placeholder="注册码"><br/>
+                <div id="err-tips" style="visibility: hidden;">
+                    <span id="tip"></span>
+                </div>
+                <input id="reg" type="button" value="立即注册" /><br>
+                <input id="back" type="button" value="返回登录" />
+            </form>
+        </div>
+    </div>
+
+    <script>
+        //显示错误提示
+        function show_errtips(msg) {
+            document.getElementById('err-tips').style.visibility = "visible"
+            document.getElementById('tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('err-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+        //显示正确提示
+        function show_suctips(msg) {
+            document.getElementById('success-tips').style.visibility = "visible"
+            document.getElementById('success-tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('success-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+
+        $('#reg').click(function() {
+            var num = $('#num').val(); 
+            var password = $('#password').val();
+            var username = $('#username').val(); 
+            var repassword = $('#repassword').val();
+            var reg_code = $('#reg_code').val();
+            if (num == "" || password == "" || username == "" || repassword == "" || reg_code == "") {
+                show_errtips("请输入完整信息!");
+            } else if (reg_code != "ghtt") {
+                show_errtips("注册码错误!");
+            } else if (num.length != 10) {
+                show_errtips("学号格式错误!");
+            } else if (username.length > 8) {
+                show_errtips("用户名过长!");
+            } else if (password.length < 6) {
+                show_errtips("密码长度太短!");
+            } else if (password != repassword) {
+                show_errtips("两次密码不一致!");
+            } else {
+                $.ajax({
+                    type: "POST",
+                    datatype: "json",
+                    url: "/register",
+                    data: {
+                        "num": num,
+                        "username": username,
+                        "password": password,
+                    },
+                    success: function (data)  {
+                        if (data.status == '-1') {
+                            show_errtips(data.msg);
+                        } else {
+                            show_suctips(data.msg);
+                            document.getElementById("password").value = '';
+                            document.getElementById("repassword").value = '';
+                            document.getElementById("reg_code").value = '';
+                        }               
+                    },
+                    error: function()  {                    
+                        alert("出错啦!");                
+                    }      
+                });
+            }
+        });
+
+        $('#back').click(function() {
+            window.location.href = "/";
+        });
+    </script>
+</body>
+
+</html>

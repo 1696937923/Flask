@@ -1,0 +1,156 @@
+ body {
+            background: #D3E7E9;
+        }
+        
+        .one_content {
+            width: 85%;
+            overflow-y: auto;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid lightgrey;
+            margin-top: 20px;
+            word-wrap: break-word;
+            position: relative;
+        }
+        
+        #title {
+            position: relative;
+            font-size: 20px;
+            top: 10px;
+            left: 2px;
+            color: black;
+            font-weight: bold;
+        }
+        
+        .name {
+            color: blue;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        #no_msg {
+            position: relative;
+            font-weight: bold;
+            font-size: 16px;
+            color: green;
+            top: 250px;
+            left: 30%;
+        }
+        
+        .time {
+            color: #808080;
+        }
+        
+        .lable {
+            color: #00BFFF;
+        }
+        
+        .dz {
+            width: 58px;
+            height: 20px;
+            color: white;
+            background-color: skyblue;
+            border-radius: 3px;
+            border-width: 0;
+            margin: 0;
+            outline: none;
+            font-family: "站酷快乐体2016修订版";
+            font-size: 10px;
+            position: absolute;
+            bottom: 3px;
+            right: 10px;
+        }
+        
+        .all_comment {
+            color: black;
+            position: relative;
+        }
+        
+        #content {
+            white-space: pre-line;
+        }
+        
+        nav {
+            display: inline-block;
+            background-color: #5597b4;
+            box-shadow: 0 1px 1px #ccc;
+            border-radius: 2px;
+            position: relative;
+        }
+        
+        nav a {
+            position: relative;
+            display: inline-block;
+            padding: 10px 50px;
+            margin-left: 2px;
+            color: #fff !important;
+            font-weight: bold;
+            font-size: 16px;
+            text-decoration: none !important;
+            line-height: 1;
+            text-transform: uppercase;
+            background-color: transparent;
+            -webkit-transition: background-color 0.25s;
+            -moz-transition: background-color 0.25s;
+            transition: background-color 0.25s;
+        }
+        
+        .docs-pictures {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .img {
+            position: relative;
+            margin: 1px;
+            left: -1px;
+            height: 90px;
+            width: 90px;
+        }
+        
+        .black_msg {
+            font-size: smaller;
+            position: absolute;
+            bottom: 3px;
+            right: 70px;
+            text-decoration: none;
+            color: #00BFFF;
+            font-weight: bold;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        
+        .mesg_comment {
+            position: relative;
+            font-size: 14px;
+            left: 5px;
+            width: 90%;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        
+        .comment {
+            position: relative;
+            margin-top: 1px;
+        }
+        
+        .com_name {
+            color: blue;
+        }
+        
+        .to_name {
+            color: blue;
+        }
+        
+        .com_create_time {
+            font-size: 10px;
+            color: #808080;
+        }
+        
+        .js-smartPhoto {
+            margin: 1px;
+        }
+        
+        [v-cloak] {
+            display: none;
+        }

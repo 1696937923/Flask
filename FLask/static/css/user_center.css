@@ -1,0 +1,259 @@
+ body {
+            background: #D3E7E9;
+        }
+        
+        .one_content {
+            width: 85%;
+            overflow-y: auto;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid lightgrey;
+            margin-top: 20px;
+            word-wrap: break-word;
+            position: relative;
+        }
+        
+        #title {
+            position: relative;
+            font-size: 20px;
+            top: 10px;
+            left: 2px;
+            color: black;
+            font-weight: bold;
+        }
+        
+        #no_msg {
+            position: absolute;
+            font-weight: bold;
+            font-size: 16px;
+            color: green;
+            top: 300px;
+            left: 30%;
+        }
+        
+        .sub_com {
+            font-size: 13px;
+            bottom: 9px;
+            height: 30px;
+            color: white;
+            background-color: skyblue;
+            border-radius: 2px;
+            border-width: 0;
+            position: relative;
+        }
+        
+        .name {
+            color: blue;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .time {
+            color: #808080;
+        }
+        
+        .lable {
+            color: #00BFFF;
+        }
+        
+        .add_comment {
+            font-size: smaller;
+            position: absolute;
+            bottom: 3px;
+            right: 70px;
+            text-decoration: none;
+            color: #00BFFF;
+            font-weight: bold;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        
+        .dz {
+            width: 58px;
+            height: 20px;
+            color: white;
+            background-color: skyblue;
+            border-radius: 3px;
+            border-width: 0;
+            margin: 0;
+            outline: none;
+            font-family: "站酷快乐体2016修订版";
+            font-size: 10px;
+            position: absolute;
+            bottom: 3px;
+            right: 10px;
+        }
+        
+        .text_com {
+            width: 80%;
+            height: 50px;
+            position: relative;
+            margin-top: 10px;
+            margin-left: 2px;
+        }
+        
+        .all_comment {
+            color: black;
+            position: relative;
+        }
+        
+        #content {
+            white-space: pre-line;
+        }
+        
+        nav {
+            display: inline-block;
+            background-color: #5597b4;
+            box-shadow: 0 1px 1px #ccc;
+            border-radius: 2px;
+            position: relative;
+        }
+        
+        nav a {
+            position: relative;
+            display: inline-block;
+            padding: 10px 16px;
+            margin-left: 0px;
+            color: #fff !important;
+            font-weight: bold;
+            font-size: 16px;
+            text-decoration: none !important;
+            line-height: 1;
+            /* text-transform: uppercase; */
+            /* background-color: transparent; */
+            /* -webkit-transition: background-color 0.25s; */
+            /* -moz-transition: background-color 0.25s; */
+            /* transition: background-color 0.25s; */
+        }
+        
+        .err-tips {
+            height: 10px;
+            position: relative;
+        }
+        
+        .tip {
+            position: relative;
+            font-size: 10px;
+            font-weight: bold;
+            bottom: 13px;
+            left: -8px;
+            margin-left: 10px;
+            color: red;
+        }
+        
+        .docs-pictures {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .img {
+            position: relative;
+            margin: 1px;
+            left: -1px;
+            height: 90px;
+            width: 90px;
+        }
+        
+        .del_msg {
+            font-size: smaller;
+            position: absolute;
+            bottom: 3px;
+            right: 110px;
+            text-decoration: none;
+            color: #00BFFF;
+            font-weight: bold;
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        
+        .black_msg {
+            font-size: smaller;
+            position: absolute;
+            top: 1px;
+            right: -5px;
+            text-decoration: none;
+            color: red;
+            font-weight: bold;
+            margin-right: 10px;
+            text-decoration: none;
+            display: none;
+        }
+        
+        .mesg_comment {
+            position: relative;
+            width: 90%;
+            font-size: 14px;
+            left: 5px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        
+        .comment {
+            position: relative;
+            margin-top: 1px;
+        }
+        
+        .com_name {
+            color: blue;
+        }
+        
+        .to_name {
+            color: blue;
+        }
+        
+        .com_contain {
+            width: 300px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        
+        .com_create_time {
+            font-size: 10px;
+            color: #808080;
+        }
+        
+        .reply_com {
+            position: relative;
+            color: #00BFFF;
+            left: 20px;
+            font-size: 10px;
+            text-decoration: none;
+        }
+        
+        .del_com {
+            position: relative;
+            color: #00BFFF;
+            left: 20px;
+            margin-left: 5px;
+            font-size: 10px;
+            text-decoration: none;
+        }
+        
+        .js-smartPhoto {
+            margin: 1px;
+        }
+        
+        [v-cloak] {
+            display: none;
+        }
+        
+        .my_msg {
+            width: 70px;
+            position: relative;
+            float: left;
+        }
+        
+        #new_msg_num {
+            width: 20px;
+            height: 20px;
+            line-height: 20px;
+            font-size: 7px;
+            color: #fff;
+            text-align: center;
+            background-color: #f00;
+            border-radius: 50%;
+            position: absolute;
+            /* display: none; */
+            right: -1px;
+            top: 2px;
+        }

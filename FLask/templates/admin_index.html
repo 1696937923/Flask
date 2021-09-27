@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/smartphoto.css">
+    <link rel="stylesheet" href="/static/css/admin_index.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/jquery-smartphoto.min.js?v=1"></script>
+    <title>管理员界面</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+</head>
+
+<body id="main" onload="myfunction()">
+    <div>
+        <nav>
+            <a id="change_pasw" href="/admin/change_pasw">修改密码</a>
+            <a id="logout" href="javascript:;">退出登录</a>
+        </nav>
+        {% raw %}
+        <div id="all_content" v-cloak>
+            <div id="no_msg" style="display: none;width: 150px;">
+                <span>暂无历史留言记录!</span>
+            </div>
+            <span id="title" style="display: block;">以下是所有留言:</span>
+            <div v-for='data in datas'>
+                <div class="one_content">
+                    <div id="s_content">
+                        <span class="name">{{data[3]}}</span><br/>
+                        <span class="time">{{data[2]}}</span><br/>
+                        <span class="lable">#{{data[1]}}</span><br/>
+                        <div id="communication">
+                            <span><button class="dz" v-bind:id="add_id('dianzan-',data[4])" v-bind:dz-msg-num='data[4]'>点赞数{{data[6]}}</button></span>
+                            <span><a class=" black_msg" href="javascript:;" v-bind:id="add_id('black_msg-',data[4])" v-on:click="black_meg(data[4])">拉黑此条</a></span>
+                        </div>
+                    </div>
+                    <p id='content'>{{data[0]}}</p>
+                    <div class="docs-pictures" v-bind:id="add_id('image-',data[4])">
+                        <a class="js-smartPhoto" v-for="imgs in data[7]" v-bind:data-group="data[4]" v-bind:href="imgs.path">
+                            <img v-bind:src="imgs.path" class="img">
+                        </a>
+                    </div>
+                </div>
+                <div class='mesg_comment' v-bind:id="add_id('comments_id-',data[4])">
+                    <div v-for="com in data[8]" class="comment" v-bind:id="add_id('comment-',com.comment_id)">
+                        <div class="main_contain">
+                            <span class="com_name">{{com.commenter}}</span>
+                            <template v-if="com.to_commenter != '' ">
+                                回复 <span class="to_name" v-if="com.to_commenter != '' ">{{com.to_commenter}}</span>
+                            </template>
+                            <span class="com_contain">:{{com.contain}}</span>
+                        </div>
+                        <span class="com_create_time">{{com.create_time}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endraw %}
+    </div>
+
+    <script type="text/javascript">
+        function myfunction() {
+            // 用来加载评论的   
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/admin/index",
+                data: {},
+                success: function(data) {
+                    if (data.status == 0) {
+                        alert(data.msg);
+                    } else {
+                        datas = data.datas;
+                        var v = new Vue({
+                            el: '#all_content',
+                            data: {
+                                datas: datas,
+                            },
+                            created() {
+                                this.load_thing();
+                            },
+                            methods: {
+                                //预先加载
+                                load_thing: function() {
+                                    if (datas != '') {
+                                        //初始化拉黑条
+                                        $.ajax({               
+                                            type: "GET",
+                                            dataType: "json",
+                                            url: "/load/disshow_flag" ,
+                                            data: {},
+                                            success: function (data)  {
+                                                if (data.status == '1') {
+                                                    for (var i = 0; i < data.pdata.length; i++) {
+                                                        var but_id = 'black_msg-' + data.pdata[i];
+                                                        ele = document.getElementById(but_id);
+                                                        ele.innerHTML = "已拉黑";
+                                                        ele.style.color = 'red';
+                                                    }
+                                                }
+                                            },
+                                            error: function()  {                    
+                                                alert("出错了");                
+                                            }        
+                                        });
+                                    } else {
+                                        document.getElementById('no_msg').style.display = "block";
+                                        document.getElementById('title').style.display = "none";
+                                    }
+
+                                },
+                                //增添id属性
+                                add_id: function(name, msg_id) {
+                                    return name + msg_id
+                                },
+                                //拉黑留言
+                                black_meg: function(msg_id) {
+                                    $.ajax({                
+                                        type: "POST",
+                                        dataType: "json",
+                                        url: "/admin/disshow/message" ,
+                                        data: {
+                                            'msg_id': msg_id,
+                                        },
+                                        success: function (data)  {
+                                            if (data.flag == 1) {
+                                                var elem1 = document.getElementById("black_msg-" + msg_id);
+                                                elem1.innerHTML = "拉黑此条";
+                                                elem1.style.color = 'skyblue';
+                                            } else if (data.flag == 0) {
+                                                var elem1 = document.getElementById("black_msg-" + msg_id);
+                                                elem1.innerHTML = "已拉黑";
+                                                elem1.style.color = 'red';
+                                            }  
+                                        },
+                                        error: function()  {                    
+                                            alert("出错了");                
+                                        }    
+                                    });
+                                }
+                            },
+                        });
+                        $(function() {
+                            $(".js-smartPhoto").smartPhoto();
+                        });
+                    }
+                },
+            });
+
+        };
+
+        //退出登录
+        $('#logout').click(function() {
+            var gnl = confirm("确定要退出登录?");
+            if (gnl == true) {
+                $.ajax({                
+                    type: "POST",
+                    dataType: "json",
+                    url: "/admin/logout" ,
+                    data: {
+                        'con': 'ad'
+                    },
+                    success: function (data)  {
+                        if (data.status == '1') {
+                            window.location.replace('/admin');
+                        } else {
+                            alert(data.msg);
+                        }  
+                    },
+                              
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>

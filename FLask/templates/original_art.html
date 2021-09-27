@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/smartphoto.css">
+    <link rel="stylesheet" href="/static/css/original_art.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <script src="/static/js/jquery-smartphoto.min.js?v=1"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>原文</title>
+</head>
+
+<body id="main" onload="myfunction()">
+    <div id="original_art">
+        <nav>
+            <a id="back" href="/my_msg">返回</a>
+        </nav>
+        {% raw %}
+        <div id="all_content" v-cloak>
+            <div v-if="status == 0 " class="no_msg">
+                <span>该留言不可见!</span>
+            </div>
+            <div v-else v-bind:id="add_id('main-',data[4])">
+                <div class="one_content">
+                    <div id="s_content">
+                        <span class="name">{{data[3]}}</span><br/>
+                        <span class="time">{{data[2]}}</span><br/>
+                        <span class="lable">#{{data[1]}}</span><br/>
+                        <div id="communication">
+                            <span><button v-on:click="DianZan(data[4])" class="dz" v-bind:id="add_id('dianzan-',data[4])" v-bind:dz-msg-num='data[4]'>点赞{{data[6]}}</button></span>
+                            <span><a v-on:click="show_comment_div(data[4],data[5])" class="add_comment" href="javascript:;" v-bind:pl-msg-num='data[4]'>评论</a></span>
+                        </div>
+                    </div>
+                    <p id='content'>{{data[0]}}</p>
+                    <div class="docs-pictures" v-bind:id="add_id('image-',data[4])">
+                        <a class="js-smartPhoto" v-for="imgs in data[7]" v-bind:data-group="data[4]" v-bind:href="imgs.path">
+                            <img v-bind:src="imgs.path" class="img">
+                        </a>
+                    </div>
+                </div>
+                <div class='mesg_comment' v-bind:id="add_id('comments_id-',data[4])">
+                    <div v-for="com in data[8]" class="comment" v-bind:id="add_id('comment-',com.comment_id)">
+                        <div class="main_contain">
+                            <span class="com_name">{{com.commenter}}</span>
+                            <template v-if="com.to_commenter != '' ">
+                                    回复 <span class="to_name" v-if="com.to_commenter != '' ">{{com.to_commenter}}</span>
+                                </template>
+                            <span class="com_contain">:{{com.contain}}</span>
+                        </div>
+                        <span class="com_create_time">{{com.create_time}}</span>
+                        <a class="reply_com" href="javascript:;" v-on:click="show_comment_div(data[4], com.commenter_id,com.commenter)">回复</a>
+                    </div>
+                </div>
+                <form class="sub" v-bind:id="add_id('comment_form-',data[4])" style="display: none">
+                    <textarea class="text_com" v-bind:id="add_id('comment_com-',data[4])" placeholder="请在这输入回复"></textarea>
+                    <button v-on:click="sub_comment(data[4])" v-bind:id="add_id('sub_com-',data[4])" class="sub_com" type="button">发表</button>
+                    <div class="err-tips" v-bind:id="add_id('err-tips-',data[4])" style="visibility: hidden;">
+                        <span class="tip" v-bind:id="add_id('tip-',data[4])">hhhh</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endraw %}
+    </div>
+
+    <script>
+        function myfunction() {
+            // 用来加载评论的   
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                url: "/get/original/article",
+                data: {},
+                success: function(data) {
+                    if (data.status == 0) {
+                        alert(data.msg);
+                    } else {
+                        vue = new Vue({
+                            el: '#all_content',
+                            data: {
+                                data: data.data,
+                                status: data.status,
+                            },
+                            created() {
+                                this.load_color()
+                            },
+                            methods: {
+                                load_color: function() {
+                                    if (data != '') {
+                                        //初始点赞条
+                                        $.ajax({               
+                                            type: "GET",
+                                            dataType: "json",
+                                            url: "/load/dianzan" ,
+                                            data: {},
+                                            success: function (the_data)  {
+                                                if (the_data.status == '1') {
+                                                    for (var i = 0; i < the_data.pdata.length; i++) {
+                                                        var but_id = 'dianzan-' + the_data.pdata[i];
+                                                        document.getElementById(but_id).style.backgroundColor = "red";
+                                                    }
+                                                }
+                                            },
+                                                      
+                                        });
+                                    }
+                                },
+                                //增添id属性
+                                add_id: function(name, msg_id) {
+                                    return name + msg_id
+                                },
+                                //点赞
+                                DianZan: function(msg_id) {
+                                    ele_id = 'dianzan-' + msg_id;
+                                    $.ajax({
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        url: '/get/dianzan',
+                                        data: {
+                                            'm_id': msg_id
+                                        },
+                                        success: function(data) {
+                                            if (data.flag == '0') {
+                                                var dianzan_count = data.dianzan;
+                                                var elem1 = document.getElementById(ele_id);
+                                                elem1.innerHTML = "点赞" + dianzan_count;
+                                                elem1.style.backgroundColor = 'red'
+                                            } else {
+                                                var dianzan_count = data.dianzan;
+                                                var elem1 = document.getElementById(ele_id);
+                                                elem1.innerHTML = "点赞" + dianzan_count;
+                                                elem1.style.backgroundColor = 'skyblue'
+                                            }
+                                        },
+                                        error: function()  {                    
+                                            alert("出错了");                
+                                        }  
+                                    });
+                                },
+                                // 用来隐藏、打开添加回复框的
+                                show_comment_div: function(msg_id, commenter_id, commenter) {
+                                    if (commenter != undefined) {
+                                        document.getElementById('comment_com-' + msg_id).placeholder = "回复 " + commenter;
+                                        document.getElementById('comment_com-' + msg_id).setAttribute('to_commenter', commenter)
+                                        document.getElementById('comment_com-' + msg_id).setAttribute('to_commenter_id', commenter_id)
+                                    } else {
+                                        document.getElementById('comment_com-' + msg_id).placeholder = "请在这输入回复";
+                                        document.getElementById('comment_com-' + msg_id).setAttribute('to_commenter', '')
+                                        document.getElementById('comment_com-' + msg_id).setAttribute('to_commenter_id', commenter_id)
+                                    }
+                                    var ele = document.getElementById("comment_form-" + msg_id);
+                                    if (ele.style.display == "block") {
+                                        ele.style.display = "none";
+                                    } else {
+                                        ele.style.display = "block";
+                                    }
+                                },
+                            },
+                        });
+                        $(function() {
+                            $(".js-smartPhoto").smartPhoto();
+                        });
+                    }
+                },
+            });
+        };
+        //获取时间
+        function getNewDate() {
+            var date = new Date();
+            var Verticalpoint = ":";
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            var hour = date.getHours();
+            var minute = date.getMinutes();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (day >= 1 && day <= 9) {
+                day = "0" + day;
+            }
+            if (hour >= 0 && hour <= 9) {
+                hour = "0" + hour
+            }
+            if (minute >= 0 && minute <= 9) {
+                minute = "0" + minute;
+            }
+            //时间日期字符串拼接
+            var time = year + "年" + month + "月" + day + "日" + " " +
+                hour + Verticalpoint + minute;
+            //返回拼接字符串
+            return time;
+        }
+        // 用来提交评论的
+        function  sub_comment(msg_id)  {
+            var comment = document.getElementById('comment_com-' + msg_id).value;
+            var to_commenter = document.getElementById('comment_com-' + msg_id).getAttribute('to_commenter');
+            var to_commenter_id = document.getElementById('comment_com-' + msg_id).getAttribute('to_commenter_id');
+            if (comment == '') {
+                document.getElementById('err-tips-' + msg_id).style.visibility = "visible"
+                document.getElementById('tip-' + msg_id).innerHTML = "发送内容不能为空哦!";
+                var timeoutBox = setTimeout(function() {
+                    document.getElementById('err-tips-' + msg_id).style.visibility = "hidden";
+                }, 2000);
+            }  
+            else {    
+                $.ajax({                
+                    type: "POST",
+                    dataType: "json",
+                    url: "/add/comment" ,
+                    data: {
+                        "message_id": msg_id,
+                        "comment": comment,
+                        "to_commenter": to_commenter,
+                        "to_commenter_id": to_commenter_id,
+                    },
+                    success: function (data)  {
+                        if (data.status == '0') {
+                            alert(data.msg);
+                        } else {
+                            var time = getNewDate();
+                            document.getElementById('comment_form-' + msg_id).style.display = "none";
+                            var name = document.createElement("span");
+                            var con = document.createElement("span");
+                            var create_time = document.createElement("span");
+                            var div1 = document.createElement("div");
+                            var div2 = document.createElement("div");
+                            var reply = document.createElement('a');
+                            reply.innerHTML = "回复";
+                            name.innerHTML = data.username;
+                            con.innerHTML = " :" + comment;
+                            create_time.innerHTML = time;
+                            div1.id = "comment-" + data.new_comment_id;
+                            div1.className = "comment";
+                            div2.className = "main_contain";
+                            name.className = "com_name";
+                            con.className = "com_contain";
+                            reply.className = "reply_com";
+                            create_time.className = "com_create_time";
+                            reply.style.left = "23px";
+                            //绑定函数
+                            reply.addEventListener("click", function() {
+                                vue.show_comment_div(msg_id, data.user_id, data.username);
+                            })
+                            if (to_commenter != '') {
+                                var to_name = document.createElement('span');
+                                to_name.className = "com_name";
+                                to_name.innerHTML = to_commenter;
+                                div2.append(name, " 回复 ", to_name, con);
+                            } else {
+                                div2.append(name, con);
+                            }
+                            div1.append(div2, create_time, reply);
+                            document.getElementById("comments_id-" + msg_id).append(div1);
+                            document.getElementById('comment_com-' + msg_id).value = "";
+                        }
+                    },
+                    error: function()  {                    
+                        alert("发送失败");                
+                    }            
+                });
+            }
+        };
+    </script>
+</body>
+
+</html>

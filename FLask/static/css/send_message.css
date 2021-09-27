@@ -1,0 +1,134 @@
+ body {
+            background-color: #D3E7E9;
+        }
+        
+        #main {
+            width: 85%;
+            text-align: center;
+            position: relative;
+            line-height: 32px;
+            top: 35px;
+        }
+        
+        #a_title {
+            position: relative;
+            left: 20px;
+            color: black;
+            font-weight: blod;
+            bottom: -2px;
+        }
+        
+        #content {
+            height: 150px;
+            width: 100%;
+            position: relative;
+            left: 20px;
+        }
+        
+        .label {
+            color: blue;
+        }
+        
+        .btn {
+            width: 100px;
+            height: 40px;
+            margin: 20px;
+            left: 23px;
+            position: relative;
+            background-color: skyblue;
+            color: white;
+            border-radius: 20px;
+            border-width: 0;
+            outline: none;
+        }
+        
+        .add-btn {
+            position: relative;
+            width: 70px;
+            height: 30px;
+            left: 23px;
+            text-align: center;
+            background-color: skyblue;
+            color: white;
+            border-radius: 5px;
+            border-width: 0;
+            outline: none;
+        }
+        
+        #err-tips {
+            height: 10px;
+            position: relative;
+        }
+        
+        #tip {
+            position: relative;
+            font-size: 10px;
+            font-weight: bold;
+            bottom: 15px;
+            left: 30px;
+            color: red;
+        }
+        
+        #success-tips {
+            height: 10px;
+            position: relative;
+        }
+        
+        #success-tip {
+            white-space: pre-line;
+            position: relative;
+            font-size: 23px;
+            font-weight: bold;
+            bottom: 35px;
+            margin-left: 45px;
+            color: green;
+        }
+        
+        .auth-tags-select {
+            position: relative;
+            margin: 3px;
+            left: 15px;
+        }
+        
+        #file {
+            position: relative;
+            left: 80px;
+            width: 10px;
+            height: 10px;
+            display: none;
+        }
+        
+        #add {
+            position: relative;
+        }
+        
+        #add-con {
+            height: 170px;
+            width: 100%;
+        }
+        
+        .preview-imgs {
+            position: relative;
+            left: 25px;
+        }
+        
+        .img-remove {
+            position: relative;
+            display: block;
+            color: red;
+            width: 30px;
+            height: 10px;
+            left: 25px;
+            bottom: 19px;
+            font-size: 1px;
+            text-decoration: none;
+        }
+        
+        .img-li {
+            position: relative;
+            left: 30px;
+            list-style-type: none;
+            float: left;
+            height: 100px;
+            margin-top: 1px;
+        }

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/my_msg.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/vue.min.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>我的消息</title>
+</head>
+
+<body id="main" onload="myfunction()">
+    <div>
+        <nav>
+            <div class="my_msg">
+                <a id="all_look" href="javascript:;">全部已读</a>
+                <span id="new_msg_num" style="display: none;"></span>
+            </div>
+            <a id="back" href="/user_center">返回</a>
+        </nav>
+        {% raw %}
+        <div class="msg-list" v-cloak>
+            <div style="display: none;width: 150px;" id="no_msg">
+                <span>暂无消息记录!</span>
+            </div>
+            <div style="display: none;width: 200px;" id="err_tip">
+                <span id="err_tip_text"></span>
+            </div>
+            <div v-for='my_msg in my_msgs'>
+                <li class="msg-read" v-bind:id="add_id('my_msg_id-',my_msg.comment_id)" v-bind:is-know="add_id('',my_msg.is_know)">
+                    <span v-if="my_msg.is_know==0" class="msg_tip" style="display: block;"></span>
+                    <div>
+                        <span class="com_create_time">{{my_msg.time}}</span>
+                    </div>
+                    <div v-if="my_msg.a_flag==1" class="msg-title">
+                        <span class="commenter">{{my_msg.commenter}}</span> 回复了你的评论:<br>
+                        <span class="contain">{{my_msg.contain}}</span>
+                    </div>
+                    <div v-else class="msg-title">
+                        <span class="commenter">{{my_msg.commenter}}</span> 评论了你:<br>
+                        <span class="contain">{{my_msg.contain}}</span>
+                    </div>
+                    <div><a class="look_com" href="javascript:;" v-on:click="look_article(my_msg.belong_msg_id,my_msg.comment_id)">查看原文</a>
+                        <a class="reply_com" href="javascript:;" v-on:click="show_comment_div(my_msg.comment_id,my_msg.commenter,my_msg.commenter_id,my_msg.is_delete)">回复</a>
+                        <a class="del_com" href="javascript:;" v-on:click="del_msg(my_msg.comment_id)">删除</a>
+                    </div>
+                </li>
+                <form class="sub" v-bind:id="add_id('comment_form-',my_msg.comment_id)" style="display: none">
+                    <textarea class="text_com" v-bind:id="add_id('comment_com-',my_msg.comment_id)" title="" placeholder="请在这输入回复"></textarea>
+                    <button v-on:click="sub_comment(my_msg.belong_msg_id,my_msg.comment_id)" v-bind:id="add_id('sub_com-',my_msg.belong_msg_id)" class="sub_com" type="button">发表</button>
+                    <div class="err-tips" v-bind:id="add_id('err-tips-',my_msg.comment_id)" style="visibility: hidden;">
+                        <span class="tip" v-bind:id="add_id('tip-',my_msg.comment_id)">hhhh</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endraw %}
+    </div>
+    <script>
+        function myfunction() {
+            $.ajax({
+                type: "get",
+                dataType: "json",
+                url: "/get/new_msg",
+                success: function(data) {
+                    var new_data_list = data.new_data_list;
+                    var new_msg_num = data.new_msg_num; //未查看过的消息数量
+                    msg_count = new_data_list.length; //所有消息的数量
+                    var vue = new Vue({
+                        el: '.msg-list',
+                        data: {
+                            my_msgs: new_data_list,
+                            new_msg_num: new_msg_num,
+                            msg_count: msg_count,
+                        },
+                        created() {
+                            this.load_new_msg_num()
+                        },
+                        methods: {
+                            //加载新消息数
+                            load_new_msg_num: function() {
+                                if (msg_count == 0) {
+                                    document.getElementById('no_msg').style.display = "block";
+                                }
+                                if (new_msg_num != 0) {
+                                    document.getElementById('new_msg_num').style.display = "block";
+                                    document.getElementById('new_msg_num').innerHTML = new_msg_num;
+                                } else {
+                                    document.getElementById('new_msg_num').style.display = "none";
+                                }
+                            },
+                            //增加id属性
+                            add_id: function(name, comment_id) {
+                                return name + comment_id
+                            },
+                            //查看原文
+                            look_article: function(belong_msg_id, comment_id) {
+                                $.ajax({
+                                    type: 'post',
+                                    dataType: 'json',
+                                    url: '/get/original/article',
+                                    data: {
+                                        belong_msg_id: belong_msg_id,
+                                        comment_id: comment_id,
+                                    },
+                                    success: function(data) {
+                                        if (data.status == 1) {
+                                            document.getElementById('my_msg_id-' + comment_id).setAttribute('is-know', 1);
+                                            window.location.href = "/look/original/article"
+                                        } else {
+                                            if (document.getElementById('my_msg_id-' + comment_id).getAttribute('is-know') == 0) {
+                                                new_msg_num = new_msg_num - 1;
+                                                if (new_msg_num != 0) {
+                                                    document.getElementById('new_msg_num').innerHTML = new_msg_num;
+                                                } else {
+                                                    document.getElementById('new_msg_num').style.display = "none";
+                                                }
+                                            }
+                                            document.getElementById('err_tip').style.display = "block";
+                                            document.getElementById('err_tip_text').innerHTML = data.msg;
+                                            setTimeout(function() {
+                                                document.getElementById('err_tip').style.display = "none";
+                                            }, 800)
+                                        }
+                                    },
+                                    error: function() {
+                                        alert('查看失败,请稍后再试!')
+                                    }
+                                });
+                            },
+                            // 用来隐藏、打开添加回复框
+                            show_comment_div: function(new_msg_id, commenter, commenter_id, is_delete) {
+                                if (is_delete == 1) {
+                                    document.getElementById('err_tip').style.display = "block";
+                                    document.getElementById('err_tip_text').innerHTML = "该评论已被删除或不可见!";
+                                    setTimeout(function() {
+                                        document.getElementById('err_tip').style.display = "none";
+                                    }, 800)
+                                } else {
+                                    if (commenter != undefined) {
+                                        document.getElementById('comment_com-' + new_msg_id).placeholder = "回复 " + commenter;
+                                        document.getElementById('comment_com-' + new_msg_id).setAttribute('to_commenter', commenter)
+                                        document.getElementById('comment_com-' + new_msg_id).setAttribute('to_commenter_id', commenter_id)
+                                    } else {
+                                        document.getElementById('comment_com-' + new_msg_id).placeholder = "请在这输入回复";
+                                        document.getElementById('comment_com-' + new_msg_id).setAttribute('to_commenter', '')
+                                        document.getElementById('comment_com-' + new_msg_id).setAttribute('to_commenter_id', 0)
+                                    }
+                                    var ele = document.getElementById("comment_form-" + new_msg_id);
+                                    if (ele.style.display == "block") {
+                                        ele.style.display = "none";
+                                    } else {
+                                        ele.style.display = "block";
+                                    }
+                                }
+                            },
+                            //删除消息
+                            del_msg: function(new_msg_id) {
+                                is_know = document.getElementById('my_msg_id-' + new_msg_id).getAttribute('is-know');
+                                $('#my_msg_id-' + new_msg_id).remove();
+                                $.ajax({
+                                    type: 'post',
+                                    dataType: 'json',
+                                    url: '/del/my_msg',
+                                    data: {
+                                        comment_id: new_msg_id,
+                                    },
+                                    success: function(data) {
+                                        msg_count = msg_count - 1;
+                                        if (is_know == 0) {
+                                            new_msg_num = new_msg_num - 1;
+                                        }
+                                        if (msg_count == 0) {
+                                            document.getElementById('no_msg').style.display = "block";
+                                            document.getElementById('new_msg_num').style.display = "none";
+                                        } else if (new_msg_num == 0) {
+                                            document.getElementById('new_msg_num').style.display = "none";
+                                        } else {
+                                            document.getElementById('new_msg_num').innerHTML = new_msg_num;
+                                        }
+                                    },
+                                    error: function() {
+                                        alert('删除失败,请稍后再试!')
+                                    }
+                                });
+                            }
+                        }
+                    });
+                },
+                error: function(error) {
+                    console.log("出错啦!");
+                }
+            });
+        }
+        // 用来提交评论的
+        function  sub_comment(msg_id, new_msg_id)  {
+            var comment = document.getElementById('comment_com-' + new_msg_id).value;
+            var to_commenter = document.getElementById('comment_com-' + new_msg_id).getAttribute('to_commenter');
+            var to_commenter_id = document.getElementById('comment_com-' + new_msg_id).getAttribute('to_commenter_id');
+            if (comment == '') {
+                document.getElementById('err-tips-' + new_msg_id).style.visibility = "visible"
+                document.getElementById('tip-' + new_msg_id).style.color = "red";
+                document.getElementById('tip-' + new_msg_id).innerHTML = "发送内容不能为空哦!";
+                var timeoutBox = setTimeout(function() {
+                    document.getElementById('err-tips-' + new_msg_id).style.visibility = "hidden";
+                }, 2000);
+            }  
+            else {    
+                $.ajax({                
+                    type: "POST",
+                    dataType: "json",
+                    url: "/add/comment" ,
+                    data: {
+                        "message_id": msg_id,
+                        "comment": comment,
+                        "to_commenter": to_commenter,
+                        "to_commenter_id": to_commenter_id,
+                    },
+                    success: function (data)  {
+                        if (data.status == '0') {
+                            alert(data.msg);
+                        } else {
+                            document.getElementById('err-tips-' + new_msg_id).style.visibility = "visible"
+                            document.getElementById('tip-' + new_msg_id).style.color = "green";
+                            document.getElementById('tip-' + new_msg_id).innerHTML = "发送成功!";
+                            var timeoutBox = setTimeout(function() {
+                                document.getElementById('err-tips-' + new_msg_id).style.visibility = "hidden";
+                                document.getElementById('comment_form-' + new_msg_id).style.display = "none";
+                                document.getElementById('comment_com-' + new_msg_id).value = "";
+                            }, 500);
+
+                        }
+                    },
+                    error: function()  {                    
+                        alert("发送失败");                
+                    }            
+                });
+            }
+        };
+        //全部已读
+        $('#all_look').click(function() {
+            document.getElementById('new_msg_num').style.display = "none";
+            var ele_list = document.getElementsByClassName('msg_tip');
+            for (var i = 0; i < ele_list.length; i++) {
+                ele_list[i].style.display = 'none';
+                ele_list[i].setAttribute('is-know', 1);
+            }
+            $.ajax({
+                type: "get",
+                dataType: "json",
+                url: '/all/new_msg/look',
+                data: {},
+                success: function (data)  {
+                    if (data.status == 0) {
+                        alert(data.msg)
+                    }
+                },
+                error: function()  {                    
+                    alert("出错了!");                
+                }            
+            });
+        })
+    </script>
+</body>
+
+</html>

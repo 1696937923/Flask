@@ -1,0 +1,79 @@
+body {
+            background-color: #D3E7E9;
+        }
+        
+        img {
+            height: 50px;
+            width: 50px;
+            vertical-align: middle;
+        }
+        
+        h1 {
+            font-size: 30px;
+            color: darkslategrey;
+            text-align: center;
+            font-family: "站酷快乐体2016修订版", "微软雅黑", "苹方";
+        }
+        
+        form {
+            text-align: center;
+            line-height: 32px;
+        }
+        
+        #main {
+            margin-top: 35px;
+        }
+        
+        .text_area {
+            height: 25px;
+            width: 200px;
+            margin: 15px;
+        }
+        
+        .btn {
+            height: 35px;
+            width: 100px;
+            left: 10px;
+            position: relative;
+            margin: 10px;
+            color: white;
+            background-color: skyblue;
+            border-radius: 2px;
+            border-width: 0;
+            text-align: center;
+        }
+        
+        #num_span {
+            position: relative;
+            left: -10px;
+        }
+        
+        #num {
+            position: relative;
+            left: -25px;
+        }
+        
+        #reg {
+            position: relative;
+            left: 35px;
+        }
+        
+        #err-tips {
+            height: 8px;
+            position: relative;
+        }
+        
+        #tip {
+            position: relative;
+            font-size: 10px;
+            font-weight: bold;
+            bottom: 15px;
+            left: -30px;
+            margin-left: 10px;
+            color: red;
+        }
+        
+        #head {
+            position: relative;
+            margin-top: 150px;
+        }

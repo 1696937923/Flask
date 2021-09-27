@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>错误提示</title>
+    <script src="/static/js/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        body {
+            text-align: center;
+            background: #D3E7E9;
+        }
+        
+        .main {
+            margin: 0 auto;
+            margin-top: 100px;
+            width: 300px;
+            height: 100px
+        }
+        
+        #err_img {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            top: 20px;
+        }
+        
+        #tip {
+            position: relative;
+            color: red;
+            font-weight: bold;
+        }
+        
+        #back {
+            position: relative;
+            top: 40px;
+            left: 25px;
+        }
+    </style>
+    <div class="main">
+        <img id="err_img" src="/static/error.png">
+        <span id="tip">你还未登录!</span><br>
+        <a id="back" href="javascript:;">返回登录</a>
+    </div>
+    <script>
+        $('#back').click(function() {
+            window.location.replace("/");
+        })
+    </script>
+</head>
+</body>
+
+</html>

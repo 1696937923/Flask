@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/static/css/smartphoto.css">
+    <link rel="stylesheet" href="/static/css/send_message.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery-smartphoto.min.js"></script>
+    <title>留言发送</title>
+</head>
+
+<body>
+    <div id="main">
+        <div id="success-tips" style="visibility: hidden;">
+            <span id="success-tip">this is a tip</span>
+        </div>
+        <p id="a_title">你想说什么？ 写在下面!</p>
+        <form id="message_sub">
+            <textarea id="content" cols="40" rows="5" placeholder="这一刻的想法...."></textarea>
+            <div id="err-tips" style="visibility: hidden;">
+                <span id="tip">this is a tip</span>
+            </div>
+            <div class="auth-tags">
+                <div class="auth-tags-select">
+                    <span class="label">标签：</span>
+                    <input type="checkbox" name="tags" value="校园生活" checked="checked" onclick="choose(this)" />校园生活
+                    <input type="checkbox" name="tags" value="寻物启事" onclick="choose(this)" />寻物启事<br>
+                    <input type="checkbox" name="tags" value="交友互动" onclick="choose(this)" />交友互动
+                    <input type="checkbox" name="tags" value="二手出物" onclick="choose(this)" />二手出物
+                </div>
+            </div>
+            <div class="z_photo">
+                <div class="z_file">
+                    <input class="btn" id="sub" type="button" value="发表" onclick="sub_msg()">
+                    <input class="btn" id="back" type="button" value="返回">
+                    <span id="add"><button class="add-btn" id="add-btn" type="button">添加图片</button></span>
+                    <input id="file" type="file" multiple onchange="add_pic()">
+                </div>
+                <div class="preview-imgs" id="z_addImg">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        var flag = 0;
+        var formData = new FormData();
+        var img_count = 0;
+        var del_count = 0;
+        var last_del;
+        var myFile = document.querySelector('#file');
+
+        //显示错误提示
+        function show_errtips(msg) {
+            document.getElementById('err-tips').style.visibility = "visible"
+            document.getElementById('tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('err-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+        //显示正确提示
+        function show_suctips(msg) {
+            document.getElementById('success-tips').style.visibility = "visible"
+            document.getElementById('success-tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('success-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+        //绑定按钮
+        $(document).ready(function() {
+            $('#add-btn').click(function() {
+                if (flag == 0) {
+                    $('#file').click();
+                } else {
+                    show_errtips('现在不能添加图片!');
+                }
+            });
+        });
+        //标签选择
+        function choose(obj) {
+            var ss = document.getElementsByName("tags");
+            for (var i = 0; i < ss.length; i++) {
+                ss[i].checked = false;
+            }
+            obj.checked = true;
+        }
+
+        //提交内容
+        function sub_msg() {
+            if (flag == 1) {
+                show_errtips("请不要重复发送哦!");
+            } else {
+                var content = $("#content").val();
+                var tags_list = document.getElementsByName("tags");
+                if (content == "" && formData.get('file') == undefined) {
+                    show_errtips("发送内容不能为空哦!");
+                } else {
+                    flag = 1;
+                    for (var i = 0; i < tags_list.length; i++) {
+                        if (tags_list[i].checked) {
+                            var tag = tags_list[i].value;
+                            break;
+                        }
+                    }
+                    formData.append("tags", tag);
+                    formData.append("content", content);
+                    $.ajax({
+                        type: "POST",
+                        dataType: "json",
+                        url: "/user/message",
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        beforeSend: function() {
+                            document.getElementById('success-tips').style.visibility = "visible"
+                            document.getElementById('success-tip').innerHTML = "留言正在发送中.....<br>&nbsp;&nbsp; (请勿退出!)";
+                        },
+                        success: function (data)  {
+                            if (data.status == '0') {
+                                show_errtips(data.msg);
+                            } else {
+                                flag = 0;
+                                show_suctips(data.msg);
+                                var timeoutBox = setTimeout(function() {
+                                    window.location.replace("/user/message/board");
+                                }, 500);
+                            }               
+                        },
+                        error: function()  {                    
+                            alert("出错啦!");                
+                        }         
+                    });
+                }
+            }
+        };
+
+        //添加图片
+        function add_pic() {
+            var file = document.getElementById("file");
+            if (img_count + file.files.length > 9) {
+                show_errtips('图片数量最多为9张!')
+            } else {
+                var fileList = file.files;
+                var imgArr = []; //存储图片的url
+
+                //添加图片到formData中
+                for (var i = 0; i < file.files.length; i++) {
+                    formData.append("file", file.files[i]);
+                }
+                //生成图片预览
+                for (var i = img_count; i < fileList.length + img_count; i++) {
+                    var imgUrl = window.URL.createObjectURL(file.files[i - img_count]);
+                    var li = document.createElement('li')
+                    var a = document.createElement("a");
+                    var img = document.createElement("img");
+                    var del = document.createElement("a");
+                    img.setAttribute("src", imgUrl);
+                    img.className = "preview-img";
+                    a.setAttribute('data-group', "preview-imgs");
+                    li.setAttribute('id', "image_num-" + i);
+                    del.setAttribute('del-num', i);
+                    a.href = imgUrl;
+                    a.className = "js-smartPhoto";
+                    a.id = "num-" + i;
+                    img.style.height = "80px";
+                    img.style.width = "80px";
+                    img.style.marginTop = "5px";
+                    img.style.marginLeft = "1px";
+                    del.className = "img-remove";
+                    li.className = "img-li"
+                    del.innerHTML = "删除";
+                    //绑定删除函数
+                    del.addEventListener("click", function() {
+                        arr = formData.getAll("file");
+                        formData.delete('file');
+                        var del_num = this.getAttribute('del-num');
+                        $('#image_num-' + del_num).remove();
+                        if (del_num > last_del) {
+                            arr.splice(del_num - del_count, 1);
+                        } else {
+                            arr.splice(del_num, 1);
+                        }
+                        for (var i = 0; i < arr.length; i++) {
+                            formData.append('file', arr[i]);
+                        }
+                        img_count = img_count - 1;
+                        del_count = del_count + 1;
+                        last_del = del_num;
+                    });
+                    li.append(a, del)
+                    a.append(img);
+                    document.getElementById("z_addImg").append(li);
+                    $(function() {
+                        $("#" + "num-" + i).smartPhoto();
+                    });
+                };
+                img_count = img_count + $("#file")[0].files.length;
+                // $(function() {
+                //     $(".js-smartPhoto").smartPhoto();
+                // });
+            }
+        };
+
+        //返回
+        $('#back').click(function() {
+            if (flag == 1) {
+                var gnl = confirm("你的留言将不会被发送,是否要退出?");
+                if (gnl == true) {
+                    window.location.href = "/user/message/board";
+                } else {
+                    return false;
+                }
+            } else {
+                window.location.href = "/user/message/board";
+            }
+        });
+    </script>
+</body>
+
+</html>

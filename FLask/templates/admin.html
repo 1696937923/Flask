@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="/static/css/admin.css" type="text/css">
+    <script src="/static/js/jquery.min.js"></script>
+    <title>管理员登录</title>
+</head>
+
+<body>
+    <div id="head">
+        <h1 id="img"><img src="/static/login.png" width="50" height="50" />管理员登录</h1>
+    </div>
+    <form id="main">
+        <span id="num_span">管理员账号:</span>
+        <input class="text_area" type="text" name="num" id="num" autocomplete="off"><br/>
+        <span id="pasw_span">密码:</span>
+        <input class="text_area" type="password" name="password" id="password"><br/>
+        <div id="err-tips" style="visibility: hidden;">
+            <span id="tip"></span>
+        </div>
+        <input class="btn" type="button" value="登录" id='sub'>
+    </form>
+
+    <script>
+        //显示错误提示
+        function show_errtips(msg) {
+            document.getElementById('err-tips').style.visibility = "visible"
+            document.getElementById('tip').innerHTML = msg;
+            var timeoutBox = setTimeout(function() {
+                document.getElementById('err-tips').style.visibility = "hidden";
+            }, 2000);
+        }
+        //登录
+        $('#sub').click(function() {
+            var num = $('#num').val(); 
+            var paswd = $('#password').val();       
+            $.ajax({                
+                type: "POST",
+                dataType: "json",
+                url: "/admin/login" ,
+                data: {
+                    "num": num,
+                    "password": paswd
+                },
+                success: function (data)  {
+                    if (data.status == '-1' || data.status == '0') {
+                        show_errtips(data.msg);
+                        var elem2 = document.getElementById('password');
+                        elem2.value = '';
+                    } else {
+                        window.location.replace('/admin_index');
+                    }               
+                },
+                error: function()  {                    
+                    alert("出错啦!");                
+                }            
+            });
+        });
+    </script>
+</body>
+
+</html>
